@@ -23,5 +23,4 @@ app.use(civilServantRoutes);
 app.use(userRoutes);
 app.use(studentRoutes);
 
-
 export { app };

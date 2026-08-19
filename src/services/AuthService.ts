@@ -91,6 +91,16 @@ export class AuthService {
       throw new Error("Usuário já existe");
     }
 
+    const campusAlreadyExists = await prisma.campus.findUnique({
+      where: {
+        id: civilServant.campusId,
+      },
+    });
+
+    if (!campusAlreadyExists) {
+      throw new Error("Campus inexistente");
+    }
+
     const passwordHash = await bcrypt.hash(civilServant.password, 10);
 
     const user = await prisma.user.create({
@@ -126,6 +136,7 @@ export class AuthService {
 
         civilServant: {
           create: {
+            campusId: civilServant.campusId,
             registration: civilServant.registration,
             preferredName: civilServant.preferredName,
             institutionalEmail: civilServant.institutionalEmail,

@@ -1,5 +1,5 @@
 export interface CreateCourseInput {
-  institutionId: string;
+  campusId: string;
   title: string;
   description?: string;
   actionType: string;

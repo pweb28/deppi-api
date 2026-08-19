@@ -7,6 +7,16 @@ export class CourseService {
       throw new Error("A data de início deve ser anterior à data de término.");
     }
 
+    const campusExists = await prisma.campus.findUnique({
+      where: {
+        id: data.campusId,
+      },
+    });
+
+    if (!campusExists) {
+      throw new Error("Campus inexistente");
+    }
+
     return await prisma.course.create({
       data: {
         ...data,

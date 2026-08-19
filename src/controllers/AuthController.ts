@@ -19,18 +19,23 @@ export class AuthController {
   }
 
   async registerCivilServant(request: Request, response: Response, role: string) {
-    const civilServant: RegisterCivilServantDto = request.body;
+    try {
+      const civilServant: RegisterCivilServantDto = request.body;
 
-    if (!role || typeof role !== 'string') {
-      return response.status(400).json({ message: "Role inválida ou ausente" });
+      if (!role || typeof role !== 'string') {
+        return response.status(400).json({ message: "Role inválida ou ausente" });
+      }
+
+      const authService = new AuthService();
+
+      const user = await authService.registerCivilServant(civilServant, role);
+
+      response.status(201).json(user);
+      return;
+    } catch (error: any) {
+      return response.status(400).json({ message: error.message || "Erro interno do servidor." });
     }
 
-    const authService = new AuthService();
-
-    const user = await authService.registerCivilServant(civilServant, role);
-
-    response.status(201).json(user);
-    return;
   }
 
   async login(request: Request, response: Response) {

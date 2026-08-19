@@ -2,6 +2,7 @@ export type { RegisterCivilServantDto } from "@/schemas/registercivilservant";
 
 export interface UpdateCivilServantBody {
     preferredName?: string;
+    campusId?: string;
     institutionalEmail?: string;
     siapeEmail?: string;
     passwordRecoveryEmail?: string;

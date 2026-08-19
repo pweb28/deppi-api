@@ -204,6 +204,18 @@ async function main() {
     },
   });
 
+  const campus = await prisma.campus.create({
+    data: {
+      name: "Nome",
+      address: "Endereço",
+      city: "Cidade",
+      code: "Código",
+      email: "emaildainstituicao@gmail.com",
+      phone: ["88888888888"],
+      state: "Estado",
+    }
+  });
+
   const servidorPasswordHash = await bcrypt.hash("12345678", 10);
 
   await prisma.user.upsert({
@@ -245,6 +257,7 @@ async function main() {
         create: {
           registration: "202600123",
           preferredName: "Mariana",
+          campusId: campus.id,
 
           institutionalEmail: "mariana.oliveira@ifce.edu.br",
           siapeEmail: "mariana.siape@ifce.edu.br",
@@ -294,7 +307,7 @@ async function main() {
     where: { id: courseId },
     update: {},
     create: {
-      institutionId: "ID_DA_INSTITUIÇÃO",
+      campusId: campus.id,
       title: "Curso de Introdução à Programação",
       description: "Curso introdutório de lógica de programação e algoritmos.",
       actionType: "COURSE",

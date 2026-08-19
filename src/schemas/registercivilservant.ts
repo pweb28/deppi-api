@@ -13,10 +13,10 @@ const dateStringSchema = z
 export const registerCivilServantSchema = baseUserSchema.extend({
   registration: z.string().optional(),
   preferredName: z.string().max(100).optional(),
+  campusId: z.string({ error: "ID do campus é obrigatório" }),
 
   institutionalEmail: z
-    .string({ error: "E-mail institucional é obrigatório" })
-    .email("E-mail institucional inválido"),
+    .email({ error: "E-mail Institucional Inválido" }),
 
   siapeEmail: z.string().email("E-mail SIAPE inválido").optional(),
   passwordRecoveryEmail: z.string().email("E-mail de recuperação inválido").optional(),
@@ -67,6 +67,8 @@ export const updateCivilServantSchema = z.object({
     .string()
     .max(100, "Nome preferencial deve ter no máximo 100 caracteres")
     .optional(),
+
+  campusId: z.string({ error: "ID do campus é obrigatório" }).optional(),
 
   institutionalEmail: z
     .string()

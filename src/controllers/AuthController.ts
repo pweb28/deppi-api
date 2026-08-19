@@ -3,10 +3,11 @@ import { AuthService } from "../services/AuthService";
 import { prisma } from "../lib/prisma";
 import { RegisterStudentDto } from "@/model/RegisterStudentDto";
 import { RegisterCivilServantDto } from "@/model/RegisterCivilServantDto";
+import { string } from "zod";
 
 export class AuthController {
 
-  async registerStudent(request: Request, response: Response){
+  async registerStudent(request: Request, response: Response) {
 
     const student: RegisterStudentDto = request.body;
 
@@ -17,27 +18,27 @@ export class AuthController {
     return response.status(201).json(user);
   }
 
-  async registerDEPPI(request: Request, response: Response){
-    const civilServant: RegisterCivilServantDto = request.body;
+  async registerCivilServant(request: Request, response: Response, role: string) {
+    try {
+      const civilServant: RegisterCivilServantDto = request.body;
 
-    const authService = new AuthService();
+      if (!role || typeof role !== 'string') {
+        return response.status(400).json({ message: "Role inválida ou ausente" });
+      }
 
-    const user = await authService.registerCivilServant(civilServant, "DEPPI");
+      const authService = new AuthService();
 
-    return response.status(201).json(user);
-   }
+      const user = await authService.registerCivilServant(civilServant, role);
 
-   async registerProfessor(request: Request, response: Response){
-    const civilServant: RegisterCivilServantDto = request.body;
+      response.status(201).json(user);
+      return;
+    } catch (error: any) {
+      return response.status(400).json({ message: error.message || "Erro interno do servidor." });
+    }
 
-    const authService = new AuthService();
+  }
 
-    const user = await authService.registerCivilServant(civilServant, "PROFESSOR");
-
-    return response.status(201).json(user);
-   }
-
-  async login(request: Request, response: Response){
+  async login(request: Request, response: Response) {
 
     const { email, password } = request.body;
 
@@ -51,12 +52,12 @@ export class AuthController {
     return response.json(result);
   }
 
-  async me(request: Request, response: Response){
+  async me(request: Request, response: Response) {
 
     const users = await prisma.user.findMany();
 
     console.log(users);
 
     return response.json(users);
-}
+  }
 }

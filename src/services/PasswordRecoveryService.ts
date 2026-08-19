@@ -1,6 +1,7 @@
 import { prisma } from "../lib/prisma";
 import { randomBytes, createHash } from "crypto";
 import { EmailService } from "./EmailService";
+import bcrypt from "bcrypt";
 
 const TOKEN_EXPIRATION_TIME = 60 * 60 * 1000; 
 
@@ -38,7 +39,7 @@ export class PasswordRecoveryService {
         const resetLink = `${process.env.FRONTEND_URL}/reset-password?token=${token}`;
         await this.emailService.sendEmail(
             user.email,
-            "Recuperação de senha - DEPPI",
+"Recuperação de senha - DEPPI",
 `Olá, ${user.name}.
 
 Recebemos uma solicitação para redefinição da sua senha.
@@ -55,4 +56,44 @@ Atenciosamente,
 Equipe DEPPI`
         );
     }
+
+    async resetPassword(token: string, newPassword: string): Promise<void> {
+    const tokenHash = createHash("sha256")
+        .update(token)
+        .digest("hex");
+
+    const passwordResetToken = await prisma.passwordResetToken.findUnique({
+        where: {
+            tokenHash
+        }
+    });
+
+    if (
+        !passwordResetToken ||
+        passwordResetToken.expiresAt < new Date() ||
+        passwordResetToken.usedAt
+    ) {
+        throw new Error("Token inválido ou expirado.");
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    await prisma.user.update({
+        where: {
+            id: passwordResetToken.userId
+        },
+        data: {
+            passwordHash: hashedPassword
+        }
+    });
+
+    await prisma.passwordResetToken.update({
+        where: {
+            id: passwordResetToken.id
+        },
+        data: {
+            usedAt: new Date()
+        }
+    });
+}
 }

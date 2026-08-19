@@ -67,11 +67,11 @@ export class CourseCoverService {
 
     const uploadedFile = await prisma.file.create({
       data: {
-        filename: file.filename,
+        filename: filename,
         originalName: file.originalname,
         mimeType: file.mimetype,
         size: file.size,
-        path: file.path,
+        path: data.publicUrl,
       },
     });
 

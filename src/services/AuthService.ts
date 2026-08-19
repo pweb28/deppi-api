@@ -79,7 +79,7 @@ export class AuthService {
     };
   }
 
-  async registerCivilServant(civilServant: RegisterCivilServantDto, role: "DEPPI" | "PROFESSOR") {
+  async registerCivilServant(civilServant: RegisterCivilServantDto, role: string) {
 
     const userAlreadyExists = await prisma.user.findUnique({
       where: {
@@ -89,6 +89,16 @@ export class AuthService {
 
     if (userAlreadyExists) {
       throw new Error("Usuário já existe");
+    }
+
+    const campusAlreadyExists = await prisma.campus.findUnique({
+      where: {
+        id: civilServant.campusId,
+      },
+    });
+
+    if (!campusAlreadyExists) {
+      throw new Error("Campus inexistente");
     }
 
     const passwordHash = await bcrypt.hash(civilServant.password, 10);
@@ -126,6 +136,7 @@ export class AuthService {
 
         civilServant: {
           create: {
+            campusId: civilServant.campusId,
             registration: civilServant.registration,
             preferredName: civilServant.preferredName,
             institutionalEmail: civilServant.institutionalEmail,

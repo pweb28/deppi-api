@@ -20,7 +20,7 @@ authRoutes.post(
   AuthMiddleware,
   permissionMiddleware("MANAGE_ROLES"),
   validate(registerCivilServantSchema),
-  authController.registerDEPPI
+  (request, response) => authController.registerCivilServant(request, response, "DEPPI")
 );
 
 authRoutes.post(
@@ -28,7 +28,7 @@ authRoutes.post(
   AuthMiddleware,
   permissionMiddleware("DEPPI_ROLES"),
   validate(registerCivilServantSchema),
-  authController.registerProfessor
+  (request, response) => authController.registerCivilServant(request, response, "PROFESSOR")
 );
 
 authRoutes.post("/login", authController.login);

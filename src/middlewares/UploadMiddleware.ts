@@ -1,6 +1,4 @@
 import multer from "multer";
-import crypto from "crypto";
-import path from "path";
 
 export const upload = multer({
   storage: multer.memoryStorage(),

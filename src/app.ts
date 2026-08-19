@@ -8,6 +8,7 @@ import cors from "cors";
 import { civilServantRoutes } from "./routes/civilServant.routes";
 import { userRoutes } from "./routes/user.routes";
 import { studentRoutes } from "./routes/student.routes";
+import { campusRoutes } from "./routes/campus.routes";
 
 const app = express();
 
@@ -22,5 +23,6 @@ app.use("/enrollments", enrollmentRoutes);
 app.use(civilServantRoutes);
 app.use(userRoutes);
 app.use(studentRoutes);
+app.use(campusRoutes);
 
 export { app };

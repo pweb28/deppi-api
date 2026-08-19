@@ -223,6 +223,20 @@ model CivilServant {
   @@map("civil_servants")
 }
 
+model Campus {
+  id        String   @id @default(uuid())
+  name      String
+  code      String   @unique
+  address   String
+  city      String
+  state     String
+  phone     String[]
+  email     String
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 enum EnrollmentStatusEnum {
   PENDING
   APPROVED
